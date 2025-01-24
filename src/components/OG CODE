@@ -1,0 +1,131 @@
+"use client";
+import { useState, useEffect } from "react";
+import { TiArrowLeftThick, TiArrowRightThick } from "react-icons/ti";
+
+interface CardItem {
+  cardName: string;
+  cardSubTitle: string;
+  ID: number;
+  image: string;
+}
+
+interface CarouselProps {
+  array: CardItem[];
+  isDisabled?: boolean; // Disable buttons conditionally
+  isAutoChange?: boolean; // Enable automatic scrolling
+  autoScrollTimer?: number;
+}
+
+const Carousel: React.FC<CarouselProps> = ({ array, isDisabled = false, isAutoChange = false, autoScrollTimer = 2 }) => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [itemsToShow, setItemsToShow] = useState<number>(4); // Default for larger screens
+
+  useEffect(() => {
+    // Update itemsToShow based on screen size
+    const updateItemsToShow = () => {
+      if (window.innerWidth < 640) {
+        setItemsToShow(1); // 1 card for mobile
+      } else {
+        setItemsToShow(4); // 4 cards for larger screens
+      }
+    };
+
+    updateItemsToShow(); // Initial check
+    window.addEventListener("resize", updateItemsToShow); // Listen for window resize
+
+    return () => {
+      window.removeEventListener("resize", updateItemsToShow); // Cleanup listener
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isAutoChange) {
+      const interval = setInterval(() => {
+        handleNext();
+      }, (autoScrollTimer * 1000));
+
+      return () => clearInterval(interval); // Cleanup the interval
+    }
+  }, [isAutoChange, currentIndex]); // Dependency array includes currentIndex for proper updates
+
+  const handleNext = () => {
+    if (isDisabled) {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % array.length);
+    } else {
+      if (currentIndex + itemsToShow >= array.length) {
+        setCurrentIndex(0); // Redirect to first card when last card is reached
+      } else {
+        setCurrentIndex((prevIndex) => prevIndex + 1);
+      }
+    }
+  };
+
+  const handlePrev = () => {
+    if (isDisabled) {
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + array.length) % array.length
+      );
+    } else {
+      if (currentIndex === 0) {
+        setCurrentIndex(array.length - 1); // Scroll to last card when prev is clicked
+      } else {
+        setCurrentIndex((prevIndex) => prevIndex - 1);
+      }
+    }
+  };
+
+  return (
+    <div className="relative overflow-hidden bg-white">
+      {/* Next/Prev Buttons */}
+      <button
+        onClick={handlePrev}
+        disabled={currentIndex === 0} // Disable prev if it's the first card and isDisabled is true
+        className={`absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-full z-10 ${
+          currentIndex === 0 ? "cursor-not-allowed opacity-50" : ""
+        }`}
+      >
+        <TiArrowLeftThick />
+      </button>
+      <button
+        onClick={handleNext}
+        disabled={isDisabled && currentIndex + itemsToShow >= array.length} // Disable next if the last card is visible and isDisabled is true
+        className={`absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-500 text-white p-2 rounded-full z-10 ${
+          isDisabled && currentIndex + itemsToShow >= array.length
+            ? "cursor-not-allowed opacity-50"
+            : ""
+        }`}
+      >
+        <TiArrowRightThick />
+      </button>
+
+      {/* Carousel Items */}
+      <div
+        className="flex transition-transform duration-500 ease-in-out"
+        style={{
+          transform: `translateX(-${currentIndex * (100 / itemsToShow)}%)`, // Adjust percentage dynamically
+        }}
+      >
+        {array.map((item) => (
+          <div
+            key={item.ID}
+            className="flex-shrink-0 w-full sm:w-1/4 px-2 pt-12" // Full width on mobile, 1/4 width on larger screens
+          >
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <img
+                src={item.image}
+                alt={item.cardName}
+                className="w-full h-96 object-cover"
+              />
+              <div className="p-4">
+                <div className="font-semibold heading1 text-text2">{item.cardName}</div>
+                <div className="heading4 text-text2">{item.cardSubTitle}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Carousel;

@@ -1,0 +1,278 @@
+/* src/styles/globals.css */
+
+/* Tailwind's base, components, and utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: "Jost",Helvetica,Arial,sans-serif
+
+}
+
+.mainTHEME {
+  @apply bg-red-500;
+}
+
+.subTheme {
+  background-color: rgb(233, 233, 233);
+  /* background-color: rgb(45, 45, 45); */
+}
+
+
+@keyframes marquee {
+  0% {
+    transform: translateX(40%);
+  }
+  50% {
+    transform: translateX(-40%);
+  }
+  100% {
+    transform: translateX(40%);
+  }
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap; /* Prevent text wrapping */
+  animation: marquee 8s ease-in-out infinite; /* 15s duration for the animation */
+}
+
+.card {
+  @apply  text-black   shadow-lg rounded-lg transition-all duration-300 ease-in-out;
+}
+
+.cardPadding {
+  @apply p-2
+}
+
+.card:hover {
+  @apply shadow-xl; /* Add a more intense shadow on hover */
+}
+
+.cardBg {
+  background-color: #eef6f6 !important;
+  /* @apply bg-gray-100 */
+  /* @apply bg-gray-100 */
+}
+
+.text2 {
+  color: rgb(27, 27, 27);
+}
+
+.heading8 {
+  font-size: 8px;
+}
+.heading7 {
+  font-size: 10px;
+}
+.heading6 {
+  font-size: 12px;
+}
+.heading5 {
+  font-size: 14px;
+}
+.heading4 {
+  font-size: 16px;
+}
+.heading3 {
+  font-size: 18px;
+}
+.heading2 {
+  font-size: 20px;
+}
+.heading1 {
+  font-size: 22px;
+}
+.heading11 {
+  font-size: 26px;
+}
+.heading111 {
+  font-size: 29px;
+}
+.heading1111 {
+  font-size: 31px;
+}
+.letterspaccing {
+  letter-spacing: 7px;
+}
+.text2 {
+  color: rgb(28, 28, 28);
+}
+.text3 {
+  color: rgb(35, 35, 35);
+}
+.text4 {
+  color: rgb(52, 52, 52);
+}
+.bgImage {
+  background-image: url('https://vendomat.modeltheme.com/wp-content/uploads/2023/11/hero-vending.jpg?id=24316');
+}
+.simple-divider {
+  border-top: 1px solid #7a7a7a; /* Dark black line */
+  margin: 4px 0; /* Margin above and below the line */
+}
+.light-divider {
+  border-top: 1px solid #d3d3d3; /* Light gray line */
+  margin: 4px 0; /* Margin above and below the line */
+}
+@keyframes rotateAndCenter {
+  0% {
+    transform: rotate(0deg) translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(60deg) translate(50vw, -50vh);
+    opacity: 0.8;
+  }
+}
+.contact-card {
+  transition: transform 0.7s ease-out, opacity 0.5s ease-out;
+}
+
+.contact-item {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.contact-item:hover {
+  animation: rotateAndCenter 0.5s forwards;
+}
+
+.contact-item:hover {
+  color: #FFD700; /* Change color on hover */
+}
+
+
+/* TEMP */
+.led-board-effect {
+    @apply inline-block py-2 px-4 font-semibold font-mono;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 4px solid rgb(0, 0, 0); /* Simulates the cursor */
+    width: 0;
+    animation: typing 5s steps(50) 1s forwards, blink 0.75s step-end infinite;
+  }
+
+  @keyframes typing {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+  
+  @keyframes blink {
+    50% {
+      border-color: transparent;
+    }
+  }
+
+
+  @keyframes neonGlow {
+    0% {
+      text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4, 0 0 20px #ff69b4;
+    }
+    50% {
+      text-shadow: 0 0 10px #32cd32, 0 0 20px #32cd32, 0 0 30px #32cd32, 0 0 40px #32cd32;
+    }
+    100% {
+      text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4, 0 0 20px #ff69b4;
+    }
+  }
+  
+  .led-neon-effect {
+    @apply inline-block text-white py-2 px-4 ;
+    animation: neonGlow 1.5s ease-in-out infinite;
+  }
+
+
+
+
+
+  /* Style the scrollbar */
+::-webkit-scrollbar {
+  width: 12px;  /* Set the width of the scrollbar */
+  height: 12px; /* Set the height for horizontal scrollbars */
+}
+
+/* Style the scrollbar track (the background) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light background for the track */
+  border-radius: 10px;  /* Rounded corners for the track */
+}
+
+/* Style the scrollbar thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Darker color for the thumb */
+  border-radius: 10px; /* Rounded corners for the thumb */
+  transition: background 0.3s ease; /* Smooth transition when hovering */
+}
+
+/* Style the scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color when hovering over the thumb */
+}
+
+
+
+.titleText {
+  font-size: 35px;
+  color: #ffffff;
+}
+
+
+.subtitleText {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+
+.bg_custom {
+  background-image: url(https://vendomat.modeltheme.com/wp-content/uploads/2021/10/Main-bg_right.png?id=23860) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+.bg_custom2 {
+  background-image: url(https://vendomat.modeltheme.com/wp-content/uploads/2021/10/Main-bg_right.png?id=23860) !important;
+  background-position: right !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+.backToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  display: none; /* Initially hidden */
+  transition: opacity 0.3s ease;
+}
+
+.backToTop.visible {
+  display: block; /* Show the button when visible */
+}
+
+.backToTop:hover {
+  background-color: #0056b3; /* Hover effect */
+}
