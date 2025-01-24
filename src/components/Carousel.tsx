@@ -11,15 +11,15 @@ interface CardItem {
 
 interface CarouselProps {
   array: CardItem[];
-  isDisabled?: boolean; // Disable buttons conditionally
-  isAutoChange?: boolean; // Enable automatic scrolling
-  autoScrollTimer?: number; // Time in seconds for auto-scroll
+  isDisabled?: boolean;
+  isAutoChange?: boolean;
+  autoScrollTimer?: number;
 }
 
 const Carousel: React.FC<CarouselProps> = ({ array, isDisabled = false, isAutoChange = false, autoScrollTimer = 3 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [itemsToShow, setItemsToShow] = useState<number>(4); // Default for larger screens
-  const [animationKey, setAnimationKey] = useState<number>(0); // Animation key to reset CSS animation
+  const [itemsToShow, setItemsToShow] = useState<number>(4);
+  const [animationKey, setAnimationKey] = useState<number>(0);
 
   useEffect(() => {
     // Update itemsToShow based on screen size
@@ -31,17 +31,17 @@ const Carousel: React.FC<CarouselProps> = ({ array, isDisabled = false, isAutoCh
       } else if (width < 900) {
         setItemsToShow(2); // 2 cards for tablet
       } else if (width < 1200) {
-        setItemsToShow(3); // 4 cards for desktop
+        setItemsToShow(3); // 3 cards for desktop
       } else {
-        setItemsToShow(4); // 4 cards for desktop
+        setItemsToShow(4); // 4 cards for Big screen
       }
     };
 
-    updateItemsToShow(); // Initial check
-    window.addEventListener("resize", updateItemsToShow); // Listen for window resize
+    updateItemsToShow();
+    window.addEventListener("resize", updateItemsToShow);
 
     return () => {
-      window.removeEventListener("resize", updateItemsToShow); // Cleanup listener
+      window.removeEventListener("resize", updateItemsToShow);
     };
   }, []);
 
@@ -51,21 +51,21 @@ const Carousel: React.FC<CarouselProps> = ({ array, isDisabled = false, isAutoCh
         handleNext();
       }, autoScrollTimer * 1000);
 
-      return () => clearInterval(interval); // Cleanup the interval
+      return () => clearInterval(interval);
     }
-  }, [isAutoChange, currentIndex, isDisabled]); // Dependency array includes isDisabled for proper updates
+  }, [isAutoChange, currentIndex, isDisabled]);
 
   const handleNext = () => {
     if (isDisabled) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % array.length);
     } else {
       if (currentIndex + itemsToShow >= array.length) {
-        setCurrentIndex(0); // Redirect to first card when last card is reached
+        setCurrentIndex(0);
       } else {
         setCurrentIndex((prevIndex) => prevIndex + 1);
       }
     }
-    setAnimationKey((prevKey) => prevKey + 1); // Reset animation
+    setAnimationKey((prevKey) => prevKey + 1);
   };
 
   const handlePrev = () => {
@@ -75,7 +75,7 @@ const Carousel: React.FC<CarouselProps> = ({ array, isDisabled = false, isAutoCh
       );
     } else {
       if (currentIndex === 0) {
-        setCurrentIndex(array.length - 1); // Scroll to last card when prev is clicked
+        setCurrentIndex(array.length - 1);
       } else {
         setCurrentIndex((prevIndex) => prevIndex - 1);
       }
@@ -147,7 +147,7 @@ const Carousel: React.FC<CarouselProps> = ({ array, isDisabled = false, isAutoCh
       <div
         className="flex transition-transform duration-500 ease-in-out  mx-2"
         style={{
-          transform: `translateX(-${currentIndex * (100 / itemsToShow)}%)`, // Adjust percentage dynamically
+          transform: `translateX(-${currentIndex * (100 / itemsToShow)}%)`,
         }}
       >
         {array.map((item) => (
