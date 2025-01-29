@@ -1,6 +1,7 @@
 import Carousel from '@/components/Carousel'
 import Carousel2 from '@/components/Carousel2'
 import Carousel3 from '@/components/Carousel3'
+import Amazoncar from '@/components/Amazoncar'
 import React from 'react'
 
 const array = [
@@ -20,7 +21,8 @@ const page = () => {
   return (
     <div className='text-2xl text-black'>
       <div></div>
-      <Carousel array={array} isDisabled={false} isAutoChange={true} autoScrollTimer={5}/>
+      <Carousel array={array} isDisabled={false} isAutoChange={true} autoScrollTimer={4}/>
+      <Amazoncar array={array}/>
       {/* <div className='card py-4 bg-red-50'>
         <Carousel2 array={array}/>
       </div>
