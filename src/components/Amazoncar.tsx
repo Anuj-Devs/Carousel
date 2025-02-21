@@ -22,54 +22,52 @@ const ProductDetail: React.FC<CarouselProps> = ({ array }) => {
   const hoverBoxRef = useRef<HTMLDivElement>(null);
   const zoomedImageRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Check if the window width is mobile or not
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768); // You can adjust the width based on your needs
+      setIsMobile(window.innerWidth <= 768);
     };
 
-    // Run check on component mount and on resize
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    // Clean up on unmount
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!zoomRef.current || !hoverBoxRef.current || !zoomedImageRef.current) return;
 
-    // Get bounding box of the image container
     const { left, top, width, height } = zoomRef.current.getBoundingClientRect();
-    
-    // Calculate the relative mouse position inside the image
+
     const x = e.clientX - left;
     const y = e.clientY - top;
 
-    // Calculate percentage of the image size relative to mouse position
-    const xPercent = (x / width) * 100;
-    const yPercent = (y / height) * 100;
+    const hoverBoxSize = 190; // Increased size to 150px for the hover box
+    const clampedX = Math.max(hoverBoxSize / 2, Math.min(x, width - hoverBoxSize / 2));
+    const clampedY = Math.max(hoverBoxSize / 2, Math.min(y, height - hoverBoxSize / 2));
 
-    // Update hover box position
-    hoverBoxRef.current.style.left = `${x - 50}px`; // Adjust to make it larger
-    hoverBoxRef.current.style.top = `${y - 50}px`; // Adjust to make it larger
+    setHoverPosition({ x: clampedX, y: clampedY });
 
-    // Set the background position of the zoomed image based on mouse position
+    hoverBoxRef.current.style.left = `${clampedX - hoverBoxSize / 2}px`;
+    hoverBoxRef.current.style.top = `${clampedY - hoverBoxSize / 2}px`;
+
+    const xPercent = ((clampedX - hoverBoxSize / 2) / (width - hoverBoxSize)) * 100;
+    const yPercent = ((clampedY - hoverBoxSize / 2) / (height - hoverBoxSize)) * 100;
+
     zoomedImageRef.current.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
   };
 
   const handleImageClick = () => {
-    setIsModalOpen(true); // Open popup on click
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // Close popup
+    setIsModalOpen(false);
   };
 
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6 relative">
-      {/* Left Side - Thumbnail Images */}
       <div className="flex md:flex-col flex-row gap-2 overflow-x-auto md:overflow-visible md:items-start items-center order-2 md:order-1">
         {array.map((item) => (
           <img
@@ -79,44 +77,37 @@ const ProductDetail: React.FC<CarouselProps> = ({ array }) => {
             className={`w-16 h-16 rounded-md object-cover cursor-pointer border-2 transition-all hover:border-yellow-500 ${
               selectedImage === item.image ? "border-yellow-500" : "border-gray-300"
             }`}
-            onMouseEnter={() => {
-              setSelectedImage(item.image);
-            }}
+            onMouseEnter={() => setSelectedImage(item.image)}
             onClick={() => setSelectedImage(item.image)}
           />
         ))}
       </div>
 
-      {/* Large Image with Zoom and Preview */}
       <div className="flex-1 order-1 md:order-2 flex flex-col relative">
-        {/* For mobile, we skip the zoom and hover effects */}
         <div
           ref={zoomRef}
           className={`relative group w-full ${isMobile ? 'md:w-96' : 'md:w-[500px]'} h-[500px] overflow-hidden cursor-pointer`}
           onMouseEnter={!isMobile ? () => setIsZoomed(true) : undefined}
           onMouseLeave={!isMobile ? () => setIsZoomed(false) : undefined}
           onMouseMove={!isMobile ? handleMouseMove : undefined}
-          onClick={handleImageClick} // Add click event here
+          onClick={handleImageClick}
         >
           <img
             src={selectedImage}
             alt="Selected"
-            className={`w-full h-full  ${isMobile ? 'object-cover' : 'object-contain'} ${isMobile ? '' : 'border'}`}
+            className={`w-full h-full bg-white ${isMobile ? 'object-cover' : 'object-contain'} ${isMobile ? '' : 'border'}`}
           />
-          {/* Only show hover effect for desktop */}
           {isZoomed && !isMobile && (
             <div
               ref={hoverBoxRef}
-              className="absolute w-40 h-40 border border-gray-600 bg-gray-600 opacity-50 pointer-events-none"
+              className="absolute w-48 h-48 border border-gray-600 bg-gray-600 opacity-50 pointer-events-none"
               style={{
-                position: "absolute",
-                background: "radial-gradient(circle, #0053a0 2px, transparent 2px)", // Amazon-style bluish dot
-                backgroundSize: "5px 5px", // Adjust size of dots and gaps
+                background: "radial-gradient(circle, #0053a0 2px, transparent 2px)",
+                backgroundSize: "5px 5px",
               }}
             />
           )}
         </div>
-        {/* Text Below the Image, Centered under image container */}
         {!isMobile && (
           <div className="flex justify-center mt-2 md:w-[500px]">
             <p className="text-gray-600 text-sm">
@@ -126,30 +117,28 @@ const ProductDetail: React.FC<CarouselProps> = ({ array }) => {
         )}
       </div>
 
-      {/* Zoomed Preview */}
       {isZoomed && !isMobile && (
         <div
           ref={zoomedImageRef}
           className="absolute right-10 top-6 w-[700px] h-[500px] border-2 rounded border-gray-600 bg-white shadow-lg overflow-hidden"
           style={{
             backgroundImage: `url(${selectedImage})`,
-            backgroundSize: "200%", // Zoom level
+            backgroundSize: "200%",
             backgroundRepeat: "no-repeat",
           }}
         />
       )}
 
-      {/* Modal Popup for full-size image */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 "
           onClick={closeModal}
         >
           <div className="relative">
-            <img src={selectedImage} alt="Modal Image" className="max-w-full max-h-full object-contain" />
+            <img src={selectedImage} alt="Modal Image" className="max-w-full h-96 max-h-full object-contain shadow-lg rounded-lg" />
             <button
               onClick={closeModal}
-              className="absolute top-2 right-2 bg-white px-3 py-0 heading5 rounded-full text-black"
+              className="absolute top-2 right-2 bg-white px-3 py-0 heading5 rounded-full text-black font-bold"
             >
               X
             </button>
